@@ -2,8 +2,35 @@ import { useEffect, useRef, useState } from "react";
 import { getPokemonByID } from "../api/pokemonApi";
 
 export default function PokemonCarousel() {
+    type Ability = {
+        ability: {
+            name: string
+        }
+    }
+
+    type Stat = {
+        base_stat: number
+        stat: {
+            name: string
+        }
+    }
+
+    type Pokemon = {
+        id: number
+        name: string
+        abilities: Ability[]
+        stats: Stat[]
+        cries: {
+            latest: string
+        }
+        sprites: {
+            front_default: string
+            back_default: string
+        }
+    }
+
     const [pokemonId, setPokemonId] = useState(1)//cycling through the id's of the pokemon using this useState
-    const [pokemon, setPokemon] = useState(null)//after we get the id, we set the pokemon's data tied to the id to setPokemon
+    const [pokemon, setPokemon] = useState<Pokemon | null>(null)//after we get the id, we set the pokemon's data tied to the id to setPokemon
     const [click, setClick] = useState(true)//adding a click button to alternate btwn front and back sprites
     const audioRef = useRef<HTMLAudioElement | null>(null)
 
