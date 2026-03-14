@@ -1,7 +1,7 @@
 const BASE_URL = "https://pokeapi.co/api/v2";
 
-export const getPokemonByID = async (id:number) => {
-    const res = await fetch (`${BASE_URL}/pokemon/${id}`);
+export const getPokemon = async () => {
+    const res = await fetch (`${BASE_URL}/pokemon?limit=30`);
 
     if (!res.ok) {
         throw new Error("Failed to fetch pokemon");
@@ -11,7 +11,7 @@ export const getPokemonByID = async (id:number) => {
 }; 
 
 export const getPokemonByName = async (name:string) => {
-    const res = await fetch(`${BASE_URL}/pokemon/${name.toLowerCase()}`);
+    const res = await fetch(`${BASE_URL}/pokemon/${name}`);
 
     if (!res.ok) {
         throw new Error("Failed to fetch Name of pokemon");

@@ -1,21 +1,25 @@
-import { useEffect, useRef, useState } from "react";
-import { getPokemonByID } from "../api/pokemonApi";
+import { useState, useEffect, useRef } from "react";
 
-export default function PokemonCarousel() {
-    type Ability = {
+type Types = {
+  type: {
+    name: string
+  }
+}
+
+type Ability = {
         ability: {
             name: string
         }
     }
 
-    type Stat = {
+type Stat = {
         base_stat: number
         stat: {
             name: string
         }
     }
 
-    type Pokemon = {
+type Pokemon = {
         id: number
         name: string
         abilities: Ability[]
@@ -27,55 +31,66 @@ export default function PokemonCarousel() {
             front_default: string
             back_default: string
         }
+        types: Types[]
     }
 
-    const [pokemonId, setPokemonId] = useState(1)//cycling through the id's of the pokemon using this useState
-    const [pokemon, setPokemon] = useState<Pokemon | null>(null)//after we get the id, we set the pokemon's data tied to the id to setPokemon
+type PokemonCarousel = {
+    pokemonList: Pokemon[]
+    currentIdx: number
+    setCurrentIdx: any
+}
+
+export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}: PokemonCarousel) {
     const [click, setClick] = useState(true)//adding a click button to alternate btwn front and back sprites
+    const pokemon = pokemonList[currentIdx];//fetching for the pokemon in the array by its index
     const audioRef = useRef<HTMLAudioElement | null>(null)
+    
+    useEffect(() => {
+                    if (pokemon?.cries?.latest) {
+                        if (audioRef.current) {
+                            audioRef.current.pause()
+                        }
+            
+                        const cry = new Audio(pokemon.cries.latest)
+            
+                        cry.volume = 0.1
+                        cry.play()
+            
+                        audioRef.current = cry
+                    }
+                }, [pokemon])
+
+    if (!pokemon) {//if the pokemon doesnt exist, we exit returning a quick error msg
+        return (
+            <div>
+                <h1>THIS POKEMON DOES NOT EXIST</h1>
+            </div>
+        )
+    };
 
     const handleClick = () => {
         setClick((click) => !click)
     }
 
-    
-
-    useEffect(() => {//fetching pokemon by id and applying the data to pokemon
-        const fetchPokemon = async () => {
-            const data = await getPokemonByID(pokemonId)
-            setPokemon(data)
-            console.log(data)
-        }
-
-        fetchPokemon()
-    }, [pokemonId]) 
-
-    useEffect(() => {
-        if (pokemon?.cries?.latest) {
-            if (audioRef.current) {
-                audioRef.current.pause()
-            }
-
-            const cry = new Audio(pokemon.cries.latest)
-
-            cry.volume = 0.1
-            cry.play()
-
-            audioRef.current = cry
-        }
-    }, [pokemon])
-
-
-
-    // console.log(pokemon.stats)
-
-    return (//rendering the pokemon, stats and everything else
+    return (//fuctionality of how what will be displayed and how the carousel will move
         <div className="">
-            <button onClick={() => setPokemonId(prev => prev - 1)}>Prev</button>
+            <button 
+                onClick={() => setCurrentIdx((prev: number) => prev - 1)}
+                disabled={currentIdx === 0}
+                >
+                    Prev
+                </button>
             
             {pokemon && (
                 <div>
                     <h2>{pokemon.name.toUpperCase()}</h2>
+                    <ul>{pokemon?.types?.map((type) => (
+                        <li key={type.type.name}>
+                            {type.type.name.toUpperCase()}
+                        </li>
+                    ))}
+
+                    </ul>
                     <button onClick={() => {
                             const cry = new Audio(pokemon.cries.latest)
                             cry.volume = 0.1
@@ -109,7 +124,11 @@ export default function PokemonCarousel() {
                 </div>
             )}
 
-            <button onClick={() => setPokemonId(prev => prev + 1)}>Next</button>
+            <button 
+                onClick={() => setCurrentIdx((prev: number) => prev === pokemonList.length - 1 ? 0 : prev + 1)}
+                >
+                    Next
+                </button>
         </div>
     )
 }
