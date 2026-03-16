@@ -75,8 +75,7 @@ export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}
     return (//fuctionality of how what will be displayed and how the carousel will move
         <div className="">
             <button 
-                onClick={() => setCurrentIdx((prev: number) => prev - 1)}
-                disabled={currentIdx === 0}
+                onClick={() => setCurrentIdx((prev: number) => prev === 0 ? pokemonList.length - 1 : prev - 1)}
                 >
                     Prev
                 </button>
@@ -99,8 +98,9 @@ export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}
                         >
                             🔊
                     </button>
+                    <p>click to see its back!</p>
                     <button onClick={handleClick}>
-                        click to see its back!
+                        
                         {click ? (
                             <img src={pokemon.sprites.front_default} alt="pokemon front" />
                         ) : (
