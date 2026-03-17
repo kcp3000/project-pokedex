@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
-import { getPokemonByTypes, getPokemon, getPokemonByName, getPokemonByGeneration, getPokemonByID } from './api/pokemonApi'
+import { getPokemonByTypes, getPokemon, getPokemonByName, getPokemonByGeneration, getPokemonByID, getPokemonSpecies } from './api/pokemonApi'
 import PokemonCarousel from './components/Carousel'
+import Stats from './components/Stats'
 import TypeFilter from './components/TypeFilter'
 import PokemonByName from './components/SearchBar'
 import GenerationFitler from './components/GenerationFilter'
+import EvolutionPairs from './components/Evolution'
 import './App.css'
 
 /*
@@ -13,7 +15,7 @@ ADD FILTER BY GENERATION?? ✅✅✅✅
 
 its has been done :D
 
-ADD EVOLUTION CHAIN??
+ADD EVOLUTION CHAIN?? ✅✅✅✅
 */
 
 type Types = {
@@ -56,11 +58,15 @@ function App() {
       const [selectedType, setSelectedType] = useState<string>("all");
       const [selectedGeneration, setSelectedGeneration] = useState<string>("all")
       const [filteredPokemon, setFilteredPokemon] = useState<Pokemon[]>([]);
+      const [evolutionChain, setEvolutionChain] = useState<Pokemon[]>([])
 
       const extractID = (urlID:string|any) => {
         return urlID.split("/").filter(Boolean).pop()
       }
 
+      //TYPE FITLER
+      //TYPE FITLER
+      //TYPE FITLER
       useEffect(() => {
             if (selectedType === "") return
             if (selectedType === "all") {
@@ -101,47 +107,53 @@ function App() {
 
         }, [selectedType])
 
+        //GEN FITLER
+        //GEN FITLER
+        //GEN FITLER
         useEffect(() => {
-            if (selectedGeneration === "") return
-            if (selectedGeneration === "all") {
-              const fetchDefaultPokemon = async () => {
-                const data = await getPokemon()
+              if (selectedGeneration === "") return
+              if (selectedGeneration === "all") {
+                const fetchDefaultPokemon = async () => {
+                  const data = await getPokemon()
 
-                const detailedDefaultPokemon = await Promise.all(
-                  data.results.slice(0, 151).map((p: any) => 
-                    fetch(p.url).then(res => res.json())
+                  const detailedDefaultPokemon = await Promise.all(
+                    data.results.slice(0, 151).map((p: any) => 
+                      fetch(p.url).then(res => res.json())
+                    )
                   )
-                )
 
-                setFilteredPokemon(detailedDefaultPokemon)
+                  setFilteredPokemon(detailedDefaultPokemon)
+                  setSelectedType("")
+                  setCurrentIdx(0)
+                  setGetName("")
+                  // console.log(detailedDefaultPokemon)
+                }
+                fetchDefaultPokemon()
+                return
+              }
+
+              const fetchPokemonByGen = async () => {
+                const data = await getPokemonByGeneration(selectedGeneration)
+
+                const detailedPokemon = await Promise.all(
+                  data.pokemon_species.slice(0, 151).map((species: any) => {
+                    return getPokemonByID(extractID(species.url))
+                  })
+                )
+                
+                // console.log(data.pokemon_species)
+                setFilteredPokemon(detailedPokemon)
                 setSelectedType("")
                 setCurrentIdx(0)
                 setGetName("")
-                // console.log(detailedDefaultPokemon)
               }
-              fetchDefaultPokemon()
-              return
-            }
+              fetchPokemonByGen()
+        
+        }, [selectedGeneration])
 
-            const fetchPokemonByGen = async () => {
-              const data = await getPokemonByGeneration(selectedGeneration)
-
-              const detailedPokemon = await Promise.all(
-                data.pokemon_species.slice(0, 151).map((species: any) => {
-                  return getPokemonByID(extractID(species.url))
-                })
-              )
-              
-              // console.log(data.pokemon_species)
-              setFilteredPokemon(detailedPokemon)
-              setSelectedType("")
-              setCurrentIdx(0)
-              setGetName("")
-            }
-            fetchPokemonByGen()
-      
-      }, [selectedGeneration])
-
+        //SEARCH FUNCTION
+        //SEARCH FUNCTION
+        //SEARCH FUNCTION
         const handleSearch = async () => {
           if (!getName) return
 
@@ -157,12 +169,51 @@ function App() {
             console.error("Pokemon not found")
           }
         }
+        
+        //EVOLUTION
+        //EVOLUTION
+        //EVOLUTION
+        const currentPokemon = filteredPokemon[currentIdx];
+
+        const extractName = (chain: any): string[] => {
+            const names: string[] = []
+            const traverse = (node: any) => {
+                names.push(node.species.name)
+
+                node.evolves_to.forEach((evolution: any) => {
+                    traverse(evolution)
+                })
+            }
+
+            traverse(chain)
+
+            return names
+          };
+
+        useEffect(() => {
+          if (!currentPokemon) return
+          if (!currentPokemon.name) return
+
+          const fetchSpecies = async () => {
+            const data = await getPokemonSpecies(currentPokemon.id)
+            const chainEvo = await fetch(data.evolution_chain.url).then(res => res.json())
+            const extractedNames = extractName(chainEvo.chain)
+            const detailedEvoPokemon = extractedNames.map((name) => {
+              return getPokemonByName(name)
+            })
+            const evoMons = await Promise.all(detailedEvoPokemon)
+            setEvolutionChain(evoMons)
+          }
+          fetchSpecies()
           
+        }, [currentPokemon])
+
+        
   return (
     <div className='MAIN_POKEDEX_CONTAINER'>
-      <h1>POKEDEX</h1>
-      <div>
-        <section>
+      <h1 className='TITLE'>POKEDEX</h1>
+      <div className='Pokedex_components'>
+       
           <TypeFilter 
             selectedType={selectedType} 
             onTypeChange={setSelectedType}
@@ -171,18 +222,31 @@ function App() {
             selectedGeneration={selectedGeneration}
             onTypeChange={setSelectedGeneration}
           />
-        </section>
-        <PokemonByName 
-          getName={getName}
-          setGetName={setGetName}
-          onSearch={handleSearch}
-        />
+        
+        
+          <PokemonByName 
+            getName={getName}
+            setGetName={setGetName}
+            onSearch={handleSearch}
+          />
+        
+      
+          <PokemonCarousel 
+            pokemonList={filteredPokemon}
+            currentIdx={currentIdx}
+            setCurrentIdx={setCurrentIdx}
+          />
+          
+        
+            <Stats  
+              pokemonList={filteredPokemon}
+              currentIdx={currentIdx}
+            />
+            <EvolutionPairs 
+              evolutionChain={evolutionChain}
+            />
+          
       </div>
-      <PokemonCarousel 
-        pokemonList={filteredPokemon}
-        currentIdx={currentIdx}
-        setCurrentIdx={setCurrentIdx}
-      />
     </div>
   )
 }
