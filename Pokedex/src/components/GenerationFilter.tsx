@@ -28,9 +28,9 @@ export default function GenerationFitler({selectedGeneration, onTypeChange}: Gen
     }, [])
 
     return (
-        <div>
-            <p>FILTER BY GEN</p>
+        <div className="Gen_container">
             <select 
+                className="Gen_select"
                 value={selectedGeneration}
                 onChange={(e) => onTypeChange(e.target.value)}
             >

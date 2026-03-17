@@ -73,62 +73,66 @@ export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}
     }
 
     return (//fuctionality of how what will be displayed and how the carousel will move
-        <div className="">
-            <button 
-                onClick={() => setCurrentIdx((prev: number) => prev === 0 ? pokemonList.length - 1 : prev - 1)}
-                >
-                    Prev
-                </button>
-            
+        <div className="C_outside_container">
             {pokemon && (
-                <div>
-                    <h2>{pokemon.name.toUpperCase()}</h2>
-                    <ul>{pokemon?.types?.map((type) => (
+                <div className="C_inside_container">
+                    <div className="C_name_aud">
+                        <h2>{pokemon.name.toUpperCase()}</h2>
+                        <button onClick={() => {
+                                const cry = new Audio(pokemon.cries.latest)
+                                cry.volume = 0.1
+                                cry.play()
+                            }}
+                        >
+                            🔊
+                        </button>
+                    </div>
+                    <ul className="C_type">
+                        {pokemon?.types?.map((type) => (
                         <li key={type.type.name}>
                             {type.type.name.toUpperCase()}
                         </li>
-                    ))}
-
-                    </ul>
-                    <button onClick={() => {
-                            const cry = new Audio(pokemon.cries.latest)
-                            cry.volume = 0.1
-                            cry.play()
-                        }}
-                        >
-                            🔊
-                    </button>
-                    <p>click to see its back!</p>
-                    <button onClick={handleClick}>
-                        
-                        {click ? (
-                            <img src={pokemon.sprites.front_default} alt="pokemon front" />
-                        ) : (
-                            <img src={pokemon.sprites.back_default} alt="pokemon back" />
-                        )}
-                    </button>
-                    <ul>{pokemon?.stats?.map((stat) => (
-                        <li key={stat.stat.name}>
-                            <strong>{stat.stat.name.toUpperCase()}</strong>: {stat.base_stat}
-                        </li>
-                    ))}
-
-                    </ul>
-                    <h3>abilites</h3>
-                    <ul>{pokemon.abilities.map((ability) => (
-                            <li key={ability.ability.name}>
-                                {ability.ability.name}
-                            </li>
                         ))}
                     </ul>
+                    
+                    <div className="C_img_nxt_prv">
+                        <button 
+                            onClick={() => setCurrentIdx((prev: number) => prev === 0 ? pokemonList.length - 1 : prev - 1)}
+                        >
+                            {`<`}
+                        </button>
+            
+                        {/* <p>click to see its back!</p> */}
+                        <div className="Pokemon_sprite">
+                            <button onClick={handleClick}>
+                                {click ? (
+                                    <img src={pokemon.sprites.front_default} alt="pokemon front" />
+                                ) : (
+                                    <img src={pokemon.sprites.back_default} alt="pokemon back" />
+                                )}
+                            </button>
+                        </div>
+                        
+                        <button 
+                            onClick={() => setCurrentIdx((prev: number) => prev === pokemonList.length - 1 ? 0 : prev + 1)}
+                        >
+                            {`>`}
+                        </button>
+                    </div>
+                    <div className="C_abilities_container">
+                        <h3>abilites</h3>
+                        <ul className="C_abilities_list">{pokemon.abilities.map((ability) => (
+                                <li key={ability.ability.name}>
+                                    {ability.ability.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    
                 </div>
             )}
 
-            <button 
-                onClick={() => setCurrentIdx((prev: number) => prev === pokemonList.length - 1 ? 0 : prev + 1)}
-                >
-                    Next
-                </button>
+            
         </div>
     )
 }

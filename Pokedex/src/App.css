@@ -14,8 +14,206 @@
   padding: 0;
 }
 
+/* FROM APP */
+/* FROM APP */
+/* FROM APP */
+/* FROM APP */
+
+.TITLE {
+  margin-top: 3rem;
+}
+
 .MAIN_POKEDEX_CONTAINER {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.Pokedex_components {
+  margin-top: 5rem;
+  display: grid;
+  width: 50rem;
+  grid-template-columns: 1.5rem repeat(22, 1rem) 3rem repeat(22, 1rem) 1.5rem;
+  grid-template-rows: 1.5rem repeat(22, 1rem) 1.5rem
+}
+
+/* FROM APP */
+/* FROM APP */
+/* FROM APP */
+/* FROM APP */
+
+/* FROM CAROUSEL */
+/* FROM CAROUSEL */
+/* FROM CAROUSEL */
+/* FROM CAROUSEL */
+
+.C_outside_container {
+  grid-column: 5/span 15;
+  grid-row: 4;
+}
+
+.C_inside_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* width: 100%; */
+}
+
+.C_name_aud {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.C_type {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  /* gap: 1rem; */
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+
+.C_img_nxt_prv {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.C_abilities_container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
+.C_abilities_list {
+  margin-top: 0.5rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* FROM CAROUSEL */
+/* FROM CAROUSEL */
+/* FROM CAROUSEL */
+/* FROM CAROUSEL */
+
+/* FROM EVO */
+/* FROM EVO */
+/* FROM EVO */
+/* FROM EVO */
+
+.E_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  grid-column: 26/ span 20;
+  grid-row: 18/ span 6;
+}
+
+.E_list {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  justify-content: space-evenly;
+  width: 100%;
+  /* gap: 0.5rem; */
+}
+
+/* FROM EVO */
+/* FROM EVO */
+/* FROM EVO */
+/* FROM EVO */
+
+/* FROM STATS */
+/* FROM STATS */
+/* FROM STATS */
+/* FROM STATS */
+
+.S_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-column: 28/span 15;
+  grid-row: 4;
+}
+
+.S_list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  list-style: none;
+}
+
+.S_item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* FROM STATS */
+/* FROM STATS */
+/* FROM STATS */
+/* FROM STATS */
+
+/* FROM SEARCH */
+/* FROM SEARCH */
+/* FROM SEARCH */
+/* FROM SEARCH */
+
+.Srch_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 35;
+}
+
+.Srch_form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* FROM SEARCH */
+/* FROM SEARCH */
+/* FROM SEARCH */
+/* FROM SEARCH */
+
+/* FROM TYPEFILTER */
+/* FROM TYPEFILTER */
+
+.TF_container {
+  grid-column: 2/span 8;
+}
+
+.TF_select {
+  width: 100%;
+}
+
+/* FROM TYPEFILTER */
+/* FROM TYPEFILTER */
+
+/* FROM GENFILTER */
+/* FROM GENFILTER */
+
+.Gen_container {
+  grid-column: 16/span 8;
+}
+
+.Gen_select {
+  width: 100%;
+}
+
+/* FROM GENFILTER */
+/* FROM GENFILTER */

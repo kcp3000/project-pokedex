@@ -25,9 +25,9 @@ export default function TypeFilter({selectedType, onTypeChange}: TypeFilterProps
     }, [])
 
     return (
-        <div>
-            <p>FILTER BY TYPE</p>
+        <div className="TF_container">
             <select 
+                className="TF_select"
                 value={selectedType}
                 onChange={(e) => onTypeChange(e.target.value)}
             >

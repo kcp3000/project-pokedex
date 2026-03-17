@@ -12,9 +12,9 @@ export default function PokemonByName({getName, setGetName, onSearch}: PokemonBy
     }
 
     return (
-        <div>
+        <div className="Srch_container">
             <section>
-                <form onSubmit={handleSubmit}>
+                <form className="Srch_form" onSubmit={handleSubmit}>
                     <input 
                         type="text"
                         placeholder="Search Pokemon!"

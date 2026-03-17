@@ -50,3 +50,8 @@ export const getPokemonByGeneration = async (num: string) => {
     const res = await fetch(`${BASE_URL}/generation/${num}`);
     return res.json();
 };
+
+export const getPokemonSpecies = async (id: any) => {
+    const res = await fetch(`${BASE_URL}/pokemon-species/${id}`);
+    return res.json();
+};
