@@ -31,7 +31,7 @@ export default function TypeFilter({selectedType, onTypeChange}: TypeFilterProps
                 value={selectedType}
                 onChange={(e) => onTypeChange(e.target.value)}
             >
-                <option value="" disabled>FILTER BY TYPE!</option>
+                <option value="" disabled>FILTER BY TYPE</option>
                 <option value="all">ALL</option>
                 {types.map((type) => (
                     <option value={type.name} key={type.name}>
