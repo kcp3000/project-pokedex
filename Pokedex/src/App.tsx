@@ -208,44 +208,57 @@ function App() {
           
         }, [currentPokemon])
 
+        const handleSelectPokemon = (mon: any) =>{
+          const index = filteredPokemon.findIndex((p) => 
+            p.id === mon.id
+          )
+
+          if (index !== -1) {
+            setCurrentIdx(index)
+          } else {
+            setFilteredPokemon([mon])
+            setCurrentIdx(0)
+          }
+        }
         
   return (
     <div className='MAIN_POKEDEX_CONTAINER'>
-      <h1 className='TITLE'>POKEDEX</h1>
-      <div className='Pokedex_components'>
-       
+      <div className='TITLE_NAV_CONTAINER'>
+        <h1 className='TITLE'>POKEDEX</h1>
+        <div className='POKEDEX_NAV'>
           <TypeFilter 
-            selectedType={selectedType} 
-            onTypeChange={setSelectedType}
-          />
-          <GenerationFitler 
-            selectedGeneration={selectedGeneration}
-            onTypeChange={setSelectedGeneration}
-          />
-        
-        
-          <PokemonByName 
-            getName={getName}
-            setGetName={setGetName}
-            onSearch={handleSearch}
-          />
-        
+              selectedType={selectedType} 
+              onTypeChange={setSelectedType}
+            />
+            <GenerationFitler 
+              selectedGeneration={selectedGeneration}
+              onTypeChange={setSelectedGeneration}
+            />
+            <PokemonByName 
+              getName={getName}
+              setGetName={setGetName}
+              onSearch={handleSearch}
+            />
+        </div>
+      </div>
       
+      <div className='Pokedex_components'>
+          <div className="APP_block1"></div>
+          <div className="APP_block2"></div>
+          <p className='STAT_LINE'>stat line</p>
           <PokemonCarousel 
             pokemonList={filteredPokemon}
             currentIdx={currentIdx}
             setCurrentIdx={setCurrentIdx}
           />
-          
-        
-            <Stats  
-              pokemonList={filteredPokemon}
-              currentIdx={currentIdx}
-            />
-            <EvolutionPairs 
-              evolutionChain={evolutionChain}
-            />
-          
+          <Stats  
+            pokemonList={filteredPokemon}
+            currentIdx={currentIdx}
+          />
+          <EvolutionPairs 
+            evolutionChain={evolutionChain}
+            onSelectPokemon={handleSelectPokemon}
+          />
       </div>
     </div>
   )
