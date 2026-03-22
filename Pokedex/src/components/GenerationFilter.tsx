@@ -34,7 +34,7 @@ export default function GenerationFitler({selectedGeneration, onTypeChange}: Gen
                 value={selectedGeneration}
                 onChange={(e) => onTypeChange(e.target.value)}
             >
-                <option value="" disabled>FILTER BY GEN!</option>
+                <option value="" disabled>FILTER BY GEN</option>
                 <option value="all">ALL</option>
                 {gen.map((g) => {
                     const generationNumber = extractID(g.url)

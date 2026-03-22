@@ -1,23 +1,17 @@
 import { useState } from "react"
 import { ChevronLeft } from 'lucide-react';
 import { ChevronRight } from 'lucide-react';
-
-type Pokemon = {
-        id: number
-        name: string
-        sprites: {
-            front_default: string
-            back_default: string
-        }
-    }
+import type { PokemonGlobal } from "../types/Pokemon";
 
 type EvolutionChainProp = {
-    evolutionChain: Pokemon[]
-    onSelectPokemon: (mon: Pokemon) => void
+    evolutionChain: PokemonGlobal[]
+    onSelectPokemon: (mon: PokemonGlobal) => void
 }
 
 export default function EvolutionPairs ({evolutionChain, onSelectPokemon}: EvolutionChainProp) {
-    if (evolutionChain.length === 0) return
+    if (evolutionChain.length === 0) {
+        return null
+    }
 
     const [startIdx, setStartIdx] = useState(0)
 
