@@ -2,43 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { Volume2 } from 'lucide-react';
 import { ChevronLeft } from 'lucide-react';
 import { ChevronRight } from 'lucide-react';
-
-type Types = {
-  type: {
-    name: string
-  }
-}
-
-type Ability = {
-        ability: {
-            name: string
-        }
-    }
-
-type Stat = {
-        base_stat: number
-        stat: {
-            name: string
-        }
-    }
-
-type Pokemon = {
-        id: number
-        name: string
-        abilities: Ability[]
-        stats: Stat[]
-        cries: {
-            latest: string
-        }
-        sprites: {
-            front_default: string
-            back_default: string
-        }
-        types: Types[]
-    }
+import type { PokemonGlobal } from "../types/Pokemon";
 
 type PokemonCarousel = {
-    pokemonList: Pokemon[]
+    pokemonList: PokemonGlobal[]
     currentIdx: number
     setCurrentIdx: any
 }

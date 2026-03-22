@@ -1,24 +1,12 @@
-type Stat = {
-        base_stat: number
-        stat: {
-            name: string
-        }
-    }
-
-type Pokemon = {
-        id: number
-        name: string
-        stats: Stat[]
-    }
+import type { PokemonGlobal } from "../types/Pokemon"
 
 type PokemonStatsProp = {
-    pokemonList: Pokemon[]
+    pokemonList: PokemonGlobal[]
     currentIdx: number
 }
 
 export default function Stats ({pokemonList, currentIdx}: PokemonStatsProp) {
     const pokemon = pokemonList[currentIdx]
-    let max: number = 255
 
     return (
         <div className="S_container">

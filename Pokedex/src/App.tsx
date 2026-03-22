@@ -6,6 +6,13 @@ import TypeFilter from './components/TypeFilter'
 import PokemonByName from './components/SearchBar'
 import GenerationFitler from './components/GenerationFilter'
 import EvolutionPairs from './components/Evolution'
+import PokemonVariants from './components/Variants'
+import MyFavorites from './components/Favorites'
+import type { PokemonGlobal } from './types/Pokemon'
+import tvScreen from './images/y2kscreen.png'
+import notePad from './images/notepadIcon.png'
+import pikaDance from './images/pikaDance.gif'
+import pokemonLogo from './images/Pokemon-Logo-1998.png'
 import './App.css'
 
 /*
@@ -18,47 +25,29 @@ its has been done :D
 ADD EVOLUTION CHAIN?? ✅✅✅✅
 */
 
-type Types = {
-  type: {
+type PokemonSpecies = {
+  id: number
+  name: string
+  varieties: {
+    pokemon: {
+      name: string
+      url: string
+    }
+  }[]
+  generation: {
     name: string
+    url: string
   }
 }
-
-type Ability = {
-        ability: {
-            name: string
-        }
-    }
-
-type Stat = {
-        base_stat: number
-        stat: {
-            name: string
-        }
-    }
-
-type Pokemon = {
-        id: number
-        name: string
-        abilities: Ability[]
-        stats: Stat[]
-        cries: {
-            latest: string
-        }
-        sprites: {
-            front_default: string
-            back_default: string
-        }
-        types: Types[]
-    }
 
 function App() {
       const [getName, setGetName] = useState("")
       const [currentIdx, setCurrentIdx] = useState(0)
       const [selectedType, setSelectedType] = useState<string>("all");
       const [selectedGeneration, setSelectedGeneration] = useState<string>("all")
-      const [filteredPokemon, setFilteredPokemon] = useState<Pokemon[]>([]);
-      const [evolutionChain, setEvolutionChain] = useState<Pokemon[]>([])
+      const [filteredPokemon, setFilteredPokemon] = useState<PokemonGlobal[]>([]);
+      const [evolutionChain, setEvolutionChain] = useState<PokemonGlobal[]>([])
+      const [variantList, setVariantList] = useState<PokemonGlobal[]>([])
 
       const extractID = (urlID:string|any) => {
         return urlID.split("/").filter(Boolean).pop()
@@ -158,10 +147,12 @@ function App() {
           if (!getName) return
 
           try {
-            const data = await getPokemonByName(getName.toLowerCase())
+            const data = await getPokemonSpecies(getName.toLowerCase())
+            const properPokemonInfo = await getPokemonByName(data.varieties[0].pokemon.name)
+
             setSelectedGeneration("")
             setSelectedType("")
-            setFilteredPokemon([data])
+            setFilteredPokemon([properPokemonInfo])
             setCurrentIdx(0)
             setGetName("")
             
@@ -175,10 +166,10 @@ function App() {
         //EVOLUTION
         const currentPokemon = filteredPokemon[currentIdx];
 
-        const extractName = (chain: any): string[] => {
-            const names: string[] = []
+        const extractName = (chain: any): number[] => {
+            const ids: number[] = []
             const traverse = (node: any) => {
-                names.push(node.species.name)
+                ids.push(extractID(node.species.url))
 
                 node.evolves_to.forEach((evolution: any) => {
                     traverse(evolution)
@@ -187,28 +178,30 @@ function App() {
 
             traverse(chain)
 
-            return names
+            return ids
           };
 
         useEffect(() => {
           if (!currentPokemon) return
-          if (!currentPokemon.name) return
+          if (!currentPokemon.id) return
+          // setEvolutionChain([])
 
           const fetchSpecies = async () => {
             const data = await getPokemonSpecies(currentPokemon.id)
             const chainEvo = await fetch(data.evolution_chain.url).then(res => res.json())
             const extractedNames = extractName(chainEvo.chain)
-            const detailedEvoPokemon = extractedNames.map((name) => {
-              return getPokemonByName(name)
+            const detailedEvoPokemon = extractedNames.map(async(id) => {
+              return await getPokemonByID(id)
             })
             const evoMons = await Promise.all(detailedEvoPokemon)
+            // if (evoMons.length === 0) return null
             setEvolutionChain(evoMons)
           }
           fetchSpecies()
           
         }, [currentPokemon])
 
-        const handleSelectPokemon = (mon: any) =>{
+        const handleSelectPokemon = async (mon: PokemonGlobal) =>{
           const index = filteredPokemon.findIndex((p) => 
             p.id === mon.id
           )
@@ -216,8 +209,68 @@ function App() {
           if (index !== -1) {
             setCurrentIdx(index)
           } else {
-            setFilteredPokemon([mon])
-            setCurrentIdx(0)
+            const getId = mon.id
+            const data = await getPokemonSpecies(getId)
+            const getGen = await getPokemonByGeneration(data.generation.name)
+            const detailedNewList = await Promise.all(
+              getGen.pokemon_species.slice(0, 151).map((species: any) => {
+                return getPokemonByID(extractID(species.url))
+              })
+            )
+
+            const newIndex = detailedNewList.findIndex(p => p.id === mon.id)
+            setFilteredPokemon(detailedNewList)
+            setCurrentIdx(newIndex)
+          }
+        }
+
+        //VERIANTS
+        //VERIANTS
+        //VERIANTS
+
+        useEffect(() => {
+          if (!currentPokemon) return
+          if (!currentPokemon.id) return
+          setVariantList([])
+
+          const fetchVariants = async () => {
+            const data: PokemonSpecies = await getPokemonSpecies(currentPokemon.id)
+            const variantData = data.varieties.map(async(v) => {
+              return await fetch(v.pokemon.url).then(res => res.json())
+            });
+
+            const variantMons = await Promise.all(variantData)
+            setVariantList(variantMons)
+          }
+          fetchVariants()
+
+        }, [currentPokemon])
+
+        const handleSelectVariant = async (mon: PokemonGlobal) =>{
+          const index = filteredPokemon.findIndex((p) => 
+            p.id === mon.id
+          )
+
+          if (index !== -1) {
+            setCurrentIdx(index)
+          } else {
+            const data = await getPokemonByID(mon.id)
+            const species = await getPokemonSpecies(data.species.name) 
+
+            const detailedVariants = await Promise.all(
+                species.varieties.map(async (mon: any) => {
+                return await fetch(mon.pokemon.url).then(res => res.json())
+              })
+            ) 
+
+            const newIndex = detailedVariants.findIndex(p => p.id === mon.id)
+            if (newIndex === -1) {
+              setCurrentIdx(0)
+            }
+
+            setVariantList([])
+            setFilteredPokemon(detailedVariants)
+            setCurrentIdx(newIndex === -1 ? 0 : newIndex)
           }
         }
         
@@ -225,31 +278,45 @@ function App() {
     <div className='MAIN_POKEDEX_CONTAINER'>
       <div className='TITLE_NAV_CONTAINER'>
         <h1 className='TITLE'>POKEDEX</h1>
-        <div className='POKEDEX_NAV'>
-          <TypeFilter 
-              selectedType={selectedType} 
-              onTypeChange={setSelectedType}
-            />
-            <GenerationFitler 
-              selectedGeneration={selectedGeneration}
-              onTypeChange={setSelectedGeneration}
-            />
-            <PokemonByName 
-              getName={getName}
-              setGetName={setGetName}
-              onSearch={handleSearch}
-            />
-        </div>
+        <PokemonByName 
+          getName={getName}
+          setGetName={setGetName}
+          onSearch={handleSearch}
+        />
+      </div>
+      <div className='POKEDEX_FILTER'>
+        <TypeFilter 
+          selectedType={selectedType} 
+          onTypeChange={setSelectedType}
+        />
+        
+        <GenerationFitler 
+          selectedGeneration={selectedGeneration}
+          onTypeChange={setSelectedGeneration}
+        />
       </div>
       
+        
       <div className='Pokedex_components'>
-          <div className="APP_block1"></div>
-          <div className="APP_block2"></div>
-          <p className='STAT_LINE'>stat line</p>
+          <div className='APP_block3'></div>
+          <div className='APP_block4'></div>
+          <div className='APP_block5'></div>
+          <div className='APP_block6'></div>
+          <div className='APP_block7'></div>
+          <div className='APP_block8'></div>
+          <div className='APP_block9'></div>
+          <div className='APP_block10'></div>
+          <div className='APP_block11'></div>
+          
+          <p className='STAT_LINE'>STAT LINE</p>
           <PokemonCarousel 
             pokemonList={filteredPokemon}
             currentIdx={currentIdx}
             setCurrentIdx={setCurrentIdx}
+          />
+          <PokemonVariants
+            variantList={variantList}
+            onSelectVariant={handleSelectVariant}
           />
           <Stats  
             pokemonList={filteredPokemon}
@@ -259,6 +326,16 @@ function App() {
             evolutionChain={evolutionChain}
             onSelectPokemon={handleSelectPokemon}
           />
+          <img src={notePad} alt={`notepad icon`} className='notepad3'/>
+          <img src={notePad} alt={`notepad icon`} className='notepad2'/>
+          <img src={notePad} alt={`notepad icon`} className='notepad'/>
+          <img src={tvScreen} alt={`old tv screen`} className='tv'/>
+          <MyFavorites />
+      </div>
+      <div className='pokemon_container'>
+        <img src={pikaDance} alt="pikachu dance" className='pikadance'/>
+        <img src={pokemonLogo} alt="pokemon logo" className='pklogo'/>
+        <img src={pikaDance} alt="pikachu dance" className='pikadance'/>
       </div>
     </div>
   )
