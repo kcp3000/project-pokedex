@@ -149,11 +149,22 @@ function App() {
           try {
             const data = await getPokemonSpecies(getName.toLowerCase())
             const properPokemonInfo = await getPokemonByName(data.varieties[0].pokemon.name)
+            
+            const gen = data.generation.name
+            const genData = await getPokemonByGeneration(gen)
+            const detailedSearch = await Promise.all(
+              genData.pokemon_species.slice(0, 151).map(async(species: any) => {
+                const speciesData = await getPokemonSpecies(extractID(species.url))
+                return fetch(speciesData.varieties[0].pokemon.url).then(res => res.json())
+              })
+            )
+
+            const newIndex = detailedSearch.findIndex(p => p.id === properPokemonInfo.id)
 
             setSelectedGeneration("")
             setSelectedType("")
-            setFilteredPokemon([properPokemonInfo])
-            setCurrentIdx(0)
+            setFilteredPokemon(detailedSearch)
+            setCurrentIdx(newIndex === -1 ? 0 : newIndex)
             setGetName("")
             
           } catch (err) {
@@ -209,8 +220,7 @@ function App() {
           if (index !== -1) {
             setCurrentIdx(index)
           } else {
-            const getId = mon.id
-            const data = await getPokemonSpecies(getId)
+            const data = await getPokemonSpecies(mon.id)
             const getGen = await getPokemonByGeneration(data.generation.name)
             const detailedNewList = await Promise.all(
               getGen.pokemon_species.slice(0, 151).map((species: any) => {
