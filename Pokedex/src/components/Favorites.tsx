@@ -1,8 +1,6 @@
 import { getPokemonByID } from "../api/pokemonApi";
 import { useEffect, useState } from "react";
-import { ChevronLeft } from 'lucide-react';
-import { ChevronRight } from 'lucide-react';
-
+import { ChevronLeft, ChevronsLeft, ChevronRight, ChevronsRight } from 'lucide-react';
 
 type Pokemon = {
         id: number
@@ -16,6 +14,9 @@ type Pokemon = {
 export default function MyFavorites () {
     const [currentIdx, setCurrentIdx] = useState(0)
     const [pokemonFavs, setPokemonFavs] = useState<Pokemon[]>([])
+    const [onHoverRight, setOnHoverRight] = useState(false);
+    const [onHoverLeft, setOnHoverLeft] = useState(false);
+
     
     const favsIDArray = [
         {
@@ -99,10 +100,20 @@ export default function MyFavorites () {
             <h1 className="F_name">{fav.name}</h1>
             <div className="F_carousel">
                 <button
+                    onMouseEnter={() => setOnHoverLeft(true)}
+                    onMouseLeave={() => setOnHoverLeft(false)}
                     className="F_button_prev"
                     onClick={() => {setCurrentIdx(prev => prev === 0 ? pokemonFavs.length - 1 : prev - 1)}}
                 >
-                    <ChevronLeft />
+                    {onHoverLeft ? (
+                        <div>
+                            <ChevronsLeft />
+                        </div>
+                    ) : (
+                        <div>
+                            <ChevronLeft />
+                        </div>
+                    )}
                 </button>
                 <img 
                     src={fav.sprites.front_default} 
@@ -110,10 +121,21 @@ export default function MyFavorites () {
                     className="F_sprite"
                 />
                 <button
+                    onMouseEnter={() => setOnHoverRight(true)}
+                    onMouseLeave={() => setOnHoverRight(false)}
                     className="F_button_next"
                     onClick={() => {setCurrentIdx(prev => prev === pokemonFavs.length - 1 ? 0 : prev + 1)}}
                 >
-                    <ChevronRight />     
+                    {onHoverRight ? (
+                        <div>
+                            <ChevronsRight />     
+                        </div>
+                    ) : (
+                        <div>
+                            <ChevronRight />     
+                        </div>
+                    )}
+                    
                 </button>
             </div>
             <div className="F_des_container">
