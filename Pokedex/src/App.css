@@ -25,6 +25,7 @@
 }
 
 html {
+  font-size: 90%;
   background-color: #E9E4D7;
   background-image: url('./images/bluechecker.jpg');
   background-color: #E9E4D7;
@@ -295,7 +296,7 @@ html {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  gap: 2rem;
   grid-column: 11/ span 2;
   grid-row: 18;
 }
@@ -472,7 +473,7 @@ html {
 .Srch_input {
   width: 10rem;
   height: 2rem;
-  background-color: #C8BC9A;
+  background-color: white;
   border-radius: 5%;
 }
 
@@ -653,7 +654,7 @@ html {
   font-family: dsFont;
   width: 100%;
   text-align: center;
-  color: #9b1a03;
+  color: #000000;
 }
 /* FROM FAVS */
 /* FROM FAVS */
@@ -692,3 +693,87 @@ html {
   height: 50%;
 }
 /* extras */
+
+@media (max-width: 1440px) and (min-width: 1024px) {
+
+  /* MAIN CONTAINER */
+  .Pokedex_components {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+
+  /* TITLE */
+  .TITLE {
+    font-size: 6rem;
+  }
+
+  /* CAROUSEL NAME */
+  .C_name_aud h2 {
+    font-size: 5rem;
+  }
+
+  /* SPRITE */
+  .C_sprite {
+    width: 13rem;
+  }
+
+  /* TYPES */
+  .C_type li {
+    font-size: 1.3rem;
+  }
+
+  /* ABILITIES */
+  .C_abilities_container h3 {
+    font-size: 2rem;
+  }
+
+  .C_abilities_list {
+    font-size: 1rem;
+  }
+
+  /* EVOLUTION */
+  .E_button img {
+    width: 4.5rem;
+  }
+
+  /* VARIANTS */
+  .V_sprite img {
+    width: 2.5rem;
+  }
+
+  .V_forms {
+    font-size: 1rem;
+  }
+
+  /* STATS */
+  .S_item {
+    font-size: 1.2rem;
+  }
+
+  .S_block {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* FAVORITES */
+  .F_container {
+    grid-row: 20/span 10;
+  }
+
+  .F_carousel {
+    margin-bottom: 6rem;
+  }
+
+  .F_name {
+    font-size: 4em;
+  }
+
+  .F_sprite {
+    width: 7rem;
+  }
+
+  .F_description {
+    font-size: 1.2rem;
+  }
+
+}

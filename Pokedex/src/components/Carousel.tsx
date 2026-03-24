@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { Volume2 } from 'lucide-react';
-import { ChevronLeft } from 'lucide-react';
-import { ChevronRight } from 'lucide-react';
+
+import { ChevronLeft, ChevronRight, ChevronsRight, ChevronsLeft, Volume1, Volume2} from 'lucide-react';
 import type { PokemonGlobal } from "../types/Pokemon";
+import { motion } from 'framer-motion'
 
 type PokemonCarousel = {
     pokemonList: PokemonGlobal[]
@@ -11,10 +11,13 @@ type PokemonCarousel = {
 }
 
 export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}: PokemonCarousel) {
-    const [click, setClick] = useState(true)//adding a click button to alternate btwn front and back sprites
+    const [click, setClick] = useState(true);//adding a click button to alternate btwn front and back sprites
     const pokemon = pokemonList[currentIdx];//fetching for the pokemon in the array by its index
-    const audioRef = useRef<HTMLAudioElement | null>(null)
-    
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [onHoverRight, setOnHoverRight] = useState(false);
+    const [onHoverLeft, setOnHoverLeft] = useState(false);
+    const [onHoverVolume, setOnHoverVolume] = useState(false);
+
     useEffect(() => {
                     if (pokemon?.cries?.latest) {
                         if (audioRef.current) {
@@ -31,11 +34,7 @@ export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}
                 }, [pokemon])
 
     if (!pokemon) {//if the pokemon doesnt exist, we exit returning a quick error msg
-        return (
-            <div>
-                <h1>THIS POKEMON DOES NOT EXIST</h1>
-            </div>
-        )
+        return null
     };
 
     const handleClick = () => {
@@ -61,13 +60,23 @@ export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}
                         )}
                         
                         <button 
+                            onMouseEnter={() => setOnHoverVolume(true)}
+                            onMouseLeave={() => setOnHoverVolume(false)}
                             onClick={() => {
                                 const cry = new Audio(pokemon.cries.latest)
                                 cry.volume = 0.1
                                 cry.play()
                             }}
                         >
-                        <Volume2 size={48} />
+                            {onHoverVolume ? (
+                                <div>
+                                    <Volume2 size={48}/>
+                                </div>
+                            ) : (
+                                <div>
+                                   <Volume1 size={48}/>
+                                </div>
+                            )}
                         </button>
                     </div>
                         <div className="C_sprite_container">
@@ -75,24 +84,58 @@ export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}
                                 className="C_sprite"
                                 onClick={handleClick}>
                                 {click ? (
-                                    <img src={pokemon.sprites.front_default} alt="pokemon front" />
+                                    <motion.img 
+                                        src={pokemon.sprites.front_default} alt={pokemon.name} 
+                                        animate={{
+                                            y: [0, -5, 0]
+                                        }}
+                                        transition={{
+                                            duration: 1,
+                                            repeat: Infinity,
+                                            repeatType: "loop",
+                                            ease: "easeInOut"
+                                        }}
+                                    />
                                 ) : (
-                                    <img src={pokemon.sprites.back_default} alt="pokemon back" />
+                                    <img 
+                                        src={pokemon.sprites.back_default} alt={pokemon.name}
+                                    />
                                 )}
                             </button>
                         </div>
                         <div className="C_button_container">
                             <button 
+                                onMouseEnter={() => setOnHoverLeft(true)}
+                                onMouseLeave={() => setOnHoverLeft(false)}
                                 className="C_prev"
                                 onClick={() => setCurrentIdx((prev: number) => prev === 0 ? pokemonList.length - 1 : prev - 1)}
                             >
-                                <ChevronLeft />
+                                {onHoverLeft ? (
+                                    <div>
+                                        <ChevronsLeft />
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <ChevronLeft />
+                                    </div>
+                                )}
+                                
                             </button>
                             <button 
+                                onMouseEnter={() => setOnHoverRight(true)}
+                                onMouseLeave={() => setOnHoverRight(false)}
                                 className="C_nxt"
                                 onClick={() => setCurrentIdx((prev: number) => prev === pokemonList.length - 1 ? 0 : prev + 1)}
                             >
-                                <ChevronRight />
+                                {onHoverRight ? (
+                                    <div>
+                                        <ChevronsRight />
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <ChevronRight />
+                                    </div>
+                                )}
                             </button>
                         </div>
                     
