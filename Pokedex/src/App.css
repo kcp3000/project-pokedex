@@ -292,7 +292,14 @@ html {
   width: 100%;
 }
 
-
+.C_button_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  grid-column: 11/ span 5;
+  grid-row: 18;
+}
 
 .C_abilities_container {
   display: flex;
