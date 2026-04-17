@@ -17,7 +17,8 @@ export default function PokemonCarousel({pokemonList, currentIdx, setCurrentIdx}
     const [onHoverRight, setOnHoverRight] = useState(false);
     const [onHoverLeft, setOnHoverLeft] = useState(false);
     const [onHoverVolume, setOnHoverVolume] = useState(false);
-
+    //hi
+    const temp = 'hi'
     useEffect(() => {
                     if (pokemon?.cries?.latest) {
                         if (audioRef.current) {
