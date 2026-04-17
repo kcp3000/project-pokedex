@@ -1,73 +1,80 @@
 import { getPokemonByID } from "../api/pokemonApi";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronsLeft, ChevronRight, ChevronsRight } from 'lucide-react';
-
-type Pokemon = {
-        id: number
-        name: string
-        sprites: {
-            front_default: string 
-        }
-        description: string
-    }
+import type { PokemonGlobal } from '../types/Pokemon'
 
 export default function MyFavorites () {
     const [currentIdx, setCurrentIdx] = useState(0)
-    const [pokemonFavs, setPokemonFavs] = useState<Pokemon[]>([])
+    const [pokemonFavs, setPokemonFavs] = useState<PokemonGlobal[]>([])
     const [onHoverRight, setOnHoverRight] = useState(false);
     const [onHoverLeft, setOnHoverLeft] = useState(false);
 
     
     const favsIDArray = [
         {
-            id: 94,
-            description: "i love gengar so much, so cool. just look at his mischievous smile :')"
+            id: 196,
+            description: "espeon and sylveon got that sort of aura that matches yours..."
         },
 
         {
-            id: 461,
-            description: "same boat as gengar but with a hint of edge. who doesn't like a little bit of edge?"
+            id: 700,
+            description: "...it's hard to describe but it's like a safe-- warm feeling, I love it"
         },
 
         {
-            id: 802,
-            description: "so f-in CUTE"
+            id: 197,
+            description: "umbreon is the sassy part of you (jolteon better)"
         },
         
         {
-            id: 6,
-            description: "can't go wrong with an og favorite, so cool in the anime too"
+            id: 470,
+            description: "and leafeon is the down-to-earth you. humble, grounded, centered."
         },
 
         {
-            id: 644,
-            description: "probably my favorite legendary ever. the duo btwn him and resh is too iconic"
+            id: 547,
+            description: "you're whimsical (haha get it) and fun to be around. its never a dull moment with you by me"
         }, 
 
         {
-            id: 807,
-            description: "recent fav. love ora's design so much"
+            id: 151,
+            description: "seeing mew smile in the movies always made me smile, just like yours. your smile brightens my day"
         },
 
         {
-            id: 419,
-            description: "love him in the anime with ash"
+            id: 150,
+            description: "auraful"
         },
 
         {
-            id: 392,
-            description: "Pokémon: DP Sinnoh EPS - 188, that's all"
+            id: 94,
+            description: "wanna be me sooooooo bad teehee. i joke, we just twins fr"
         },
 
         {
-            id: 448,
-            description: "movies had me thinking he was a legendary :sob:. still cool though"
+            id: 4,
+            description: "never wanna see the light within you threaten to be blown away. like char's tail, keep burning"
         },
 
         {
-            id: 655,
-            description: "so much fun using her in XY. del's new mega is sick too"
-        }
+            id: 619,
+            description: "u never beating me in a fade smh"
+        },
+
+        {
+            id: 59,
+            description:"(ask me what i was going to say here)"
+        },
+
+        {
+            id: 778,
+            description:"mimikyu is so tragically cute bruh"
+        },
+
+        {
+            id: 104,
+            description:"same with cubone :sob: but cubone is so fucking adorable, just like u >:)"
+        },
     ]
 
     useEffect(() => {
@@ -92,13 +99,24 @@ export default function MyFavorites () {
 
     return (
         <div className="F_container">
-            <div className="F_buttons_container">
-                
+            
+            
+            <div className="F_carousel">
+                <p className="F_myfavs">tiny's favs {`<3`}</p>
+                <h1 className="F_name">{fav.name.length > 10 ? `${fav.name.slice(0, 10)}...` : fav.name}</h1>
+                <img 
+                    src={fav.sprites.front_default} 
+                    alt={`Front sprite of ${fav.name}`} 
+                    className="F_sprite"
+                />
                 
             </div>
-            <p className="F_myfavs">my favs :D</p>
-            <h1 className="F_name">{fav.name}</h1>
-            <div className="F_carousel">
+            <div className="F_des_container">
+                <p className="F_description">
+                    {fav.description}
+                </p>
+            </div>
+            <div className="F_button_container">
                 <button
                     onMouseEnter={() => setOnHoverLeft(true)}
                     onMouseLeave={() => setOnHoverLeft(false)}
@@ -115,11 +133,6 @@ export default function MyFavorites () {
                         </div>
                     )}
                 </button>
-                <img 
-                    src={fav.sprites.front_default} 
-                    alt={`Front sprite of ${fav.name}`} 
-                    className="F_sprite"
-                />
                 <button
                     onMouseEnter={() => setOnHoverRight(true)}
                     onMouseLeave={() => setOnHoverRight(false)}
@@ -137,12 +150,6 @@ export default function MyFavorites () {
                     )}
                     
                 </button>
-            </div>
-            <div className="F_des_container">
-                <p className="F_description">
-                    {fav.description}
-                </p>
-                
             </div>
         </div>
     )

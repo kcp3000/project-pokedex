@@ -28,4 +28,5 @@ export type PokemonGlobal = {
     back_default: string
   }
   types: Types[]
+  description: string
 };
