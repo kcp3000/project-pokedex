@@ -1,5 +1,15 @@
 const BASE_URL = "https://pokeapi.co/api/v2";
 
+export const getPokemon = async () => {
+    const res = await fetch (`${BASE_URL}/pokemon?limit=151`);
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch pokemon");
+    };
+
+    return res.json();
+}; 
+
 export const getPokemonByID = async (id:number) => {
     const res = await fetch (`${BASE_URL}/pokemon/${id}`);
 
@@ -10,8 +20,9 @@ export const getPokemonByID = async (id:number) => {
     return res.json();
 }; 
 
+
 export const getPokemonByName = async (name:string) => {
-    const res = await fetch(`${BASE_URL}/pokemon/${name.toLowerCase()}`);
+    const res = await fetch(`${BASE_URL}/pokemon/${name}`);
 
     if (!res.ok) {
         throw new Error("Failed to fetch Name of pokemon");
@@ -27,5 +38,20 @@ export const getTypes = async () => {
 
 export const getPokemonByTypes = async (type:string) => {
     const res = await fetch (`${BASE_URL}/type/${type}`);
+    return res.json();
+};
+
+export const getGeneration = async () => {
+    const res = await fetch(`${BASE_URL}/generation`);
+    return res.json();
+};
+
+export const getPokemonByGeneration = async (num: string) => {
+    const res = await fetch(`${BASE_URL}/generation/${num}`);
+    return res.json();
+};
+
+export const getPokemonSpecies = async (id: any) => {
+    const res = await fetch(`${BASE_URL}/pokemon-species/${id}`);
     return res.json();
 };
